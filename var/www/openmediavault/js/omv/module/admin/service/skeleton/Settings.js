@@ -30,7 +30,7 @@ Ext.define("OMV.module.admin.service.skeleton.Settings", {
 
         return [{
             xtype    : "fieldset",
-            title    : "General settings",
+            title    : _("General settings"),
             defaults : {
                 labelSeparator : ""
             },
