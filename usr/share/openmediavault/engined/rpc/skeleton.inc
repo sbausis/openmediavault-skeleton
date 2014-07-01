@@ -62,9 +62,9 @@ class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
         // Get configuration object
         $object = $xmlConfig->get($this->getXPath());
 
-        if (is_null($object))
-            throw new OMVException(OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED,
-                $this->getXPath());
+        if (is_null($object)) {
+            throw new OMVException(OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED, $this->getXPath());
+        }
 
         // Modify result data
         $settingsObject["enable"] = boolval($object["enable"]);
@@ -82,12 +82,15 @@ class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
         ));
 
         // Validate the parameters of the RPC service method.
-        $this->validateMethodParams($params, '{
-            "type"       : "object",
-            "properties" : {
-                "enable" : { "type" : "boolean" }
-            }
-        }');
+        $this->validateMethodParams(
+            $params,
+            '{
+                "type"       : "object",
+                "properties" : {
+                    "enable" : { "type" : "boolean" }
+                }
+            }'
+        );
 
         // Prepare configuration data
         $object = array(
@@ -95,9 +98,12 @@ class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
         );
 
         // Set configuration object
-        if (false === $xmlConfig->replace($this->getXPath(), $object))
-            throw new OMVException(OMVErrorMsg::E_CONFIG_SET_OBJECT_FAILED,
-                $this->getXPath());
+        if (false === $xmlConfig->replace($this->getXPath(), $object)) {
+            throw new OMVException(
+                OMVErrorMsg::E_CONFIG_SET_OBJECT_FAILED,
+                $this->getXPath()
+            );
+        }
 
         // Notify configuration changes
         $dispatcher = &OMVNotifyDispatcher::getInstance();

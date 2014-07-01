@@ -23,8 +23,9 @@ require_once "openmediavault/error.inc";
 require_once "openmediavault/util.inc";
 require_once "openmediavault/initscript.inc";
 
-class OMVModuleSkeleton extends OMVModuleServiceAbstract
-    implements OMVINotifyListener, OMVIModuleServiceStatus
+class OMVModuleSkeleton extends OMVModuleServiceAbstract implements
+    OMVINotifyListener,
+    OMVIModuleServiceStatus
 {
     /* Helpers */
 
@@ -40,13 +41,13 @@ class OMVModuleSkeleton extends OMVModuleServiceAbstract
 
     /* /Helpers */
 
-	/**
-	 * Get the module name.
-	 */
-	public function getName()
-	{
-		return "skeleton";
-	}
+    /**
+     * Get the module name.
+     */
+    public function getName()
+    {
+        return "skeleton";
+    }
 
     /**
      * Get the status of the service
@@ -57,9 +58,12 @@ class OMVModuleSkeleton extends OMVModuleServiceAbstract
 
         $object = $xmlConfig->get($this->getXPath());
 
-        if (is_null($object))
-            throw new OMVException(OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED,
-                $this->getXPath());
+        if (is_null($object)) {
+            throw new OMVException(
+                OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED,
+                $this->getXPath()
+            );
+        }
 
         $initd = new OMVSysVInitScript($this->getName());
 
@@ -71,17 +75,21 @@ class OMVModuleSkeleton extends OMVModuleServiceAbstract
         );
     }
 
-	/**
-	 * Create and update the configuration
-	 */
-	public function applyConfig()
-	{
-	    $cmd = sprintf("sudo omv-mkconf %s 2>&1", $this->getName());
+    /**
+     * Create and update the configuration
+     */
+    public function applyConfig()
+    {
+        $cmd = sprintf("sudo omv-mkconf %s 2>&1", $this->getName());
 
-        if (0 !== $this->exec($cmd, $output))
-            throw new OMVException(OMVErrorMsg::E_EXEC_FAILED,
-                $cmd, implode("\n", $output));
-	}
+        if (0 !== $this->exec($cmd, $output)) {
+            throw new OMVException(
+                OMVErrorMsg::E_EXEC_FAILED,
+                $cmd,
+                implode("\n", $output)
+            );
+        }
+    }
 
     /**
      * Start the service
@@ -92,12 +100,16 @@ class OMVModuleSkeleton extends OMVModuleServiceAbstract
 
         $object = $xmlConfig->get($this->getXPath());
 
-        if (is_null($object))
-            throw new OMVException(OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED,
-                $this->getXPath());
+        if (is_null($object)) {
+            throw new OMVException(
+                OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED,
+                $this->getXPath()
+            );
+        }
 
-        if (!$object["enable"])
+        if (!$object["enable"]) {
             return;
+        }
 
         $initd = new OMVSysVInitScript($this->getName(), true);
         $initd->exec();
@@ -112,18 +124,19 @@ class OMVModuleSkeleton extends OMVModuleServiceAbstract
         $initd->exec();
     }
 
-	/**
-	 * Bind listeners.
-	 */
-	public function bindListeners(OMVNotifyDispatcher $dispatcher) {
-	    $dispatcher->addListener(
+    /**
+     * Bind listeners.
+     */
+    public function bindListeners(OMVNotifyDispatcher $dispatcher)
+    {
+        $dispatcher->addListener(
             OMV_NOTIFY_CREATE | OMV_NOTIFY_MODIFY | OMV_NOTIFY_DELETE,
             $this->getEventMessagePath(),
-            array($this, "setDirty"));
-	}
+            array($this, "setDirty")
+        );
+    }
 }
 
 // Register module
 $moduleMgr = &OMVModuleMgr::getInstance();
 $moduleMgr->registerModule(new OMVModuleSkeleton());
-
