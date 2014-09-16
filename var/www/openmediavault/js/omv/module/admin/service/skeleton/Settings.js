@@ -29,7 +29,7 @@ Ext.define("OMV.module.admin.service.skeleton.Settings", {
         var me = this;
 
         return [{
-            xtyp: "fieldset",
+            xtype: "fieldset",
             title: _("General settings"),
             defaults: {
                 labelSeparator: ""
