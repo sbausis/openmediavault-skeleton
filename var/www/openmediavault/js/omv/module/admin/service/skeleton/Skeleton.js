@@ -18,9 +18,9 @@
 // require("js/omv/WorkspaceManager.js")
 
 OMV.WorkspaceManager.registerNode({
-    id      : "skeleton",
-    path    : "/service",
-    text    : _("Skeleton"),
-    icon16  : "images/skeleton.png",
-    iconSvg : "images/skeleton.svg"
+    id: "skeleton",
+    path: "/service",
+    text: _("Skeleton"),
+    icon16: "images/skeleton.png",
+    iconSvg: "images/skeleton.svg"
 });

@@ -17,39 +17,65 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once "openmediavault/object.inc";
 require_once "openmediavault/error.inc";
-require_once "openmediavault/util.inc";
-require_once "openmediavault/rpc.inc";
 require_once "openmediavault/notify.inc";
+require_once "openmediavault/object.inc";
+require_once "openmediavault/rpc.inc";
+require_once "openmediavault/util.inc";
 
 class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
 {
-    /* Helpers */
-
+    /**
+     * Get the main event message path.
+     *
+     * @return string
+     */
     private function getEventMessagePath()
     {
         return "org.openmediavault.services.skeleton";
     }
 
-    private function getXPath()
+    /**
+     * Get the service configuration XPath.
+     *
+     * @return string
+     */
+    private function getXpath()
     {
         return "/config/services/skeleton";
     }
 
-    /* /Helpers */
-
+    /**
+     * Get the name of the RPC service.
+     *
+     * @return string
+     */
     public function getName()
     {
         return "Skeleton";
     }
 
+    /**
+     * Initialize the RPC service.
+     *
+     * @return void
+     */
     public function initialize()
     {
         $this->registerMethod("getSettings");
         $this->registerMethod("setSettings");
     }
 
+    /**
+     * Get the settings of the service.
+     *
+     * @param array $params The method paramaters.
+     * @param array $context The context of the caller.
+     *
+     * @throws E_CONFIG_GET_OBJECT_FAILED
+     *
+     * @return mixed
+     */
     public function getSettings($params, $context)
     {
         global $xmlConfig;
@@ -60,10 +86,13 @@ class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
         ));
 
         // Get configuration object
-        $object = $xmlConfig->get($this->getXPath());
+        $object = $xmlConfig->get($this->getXpath());
 
         if (is_null($object)) {
-            throw new OMVException(OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED, $this->getXPath());
+            throw new OMVException(
+                OMVErrorMsg::E_CONFIG_GET_OBJECT_FAILED,
+                $this->getXpath()
+            );
         }
 
         // Modify result data
@@ -72,6 +101,16 @@ class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
         return $settingsObject;
     }
 
+    /**
+     * Set the settings of the service.
+     *
+     * @param array $params The method paramaters.
+     * @param array $context The context of the caller.
+     *
+     * @throws E_CONFIG_SET_OBJECT_FAILED
+     *
+     * @return mixed
+     */
     public function setSettings($params, $context)
     {
         global $xmlConfig;
@@ -85,9 +124,11 @@ class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
         $this->validateMethodParams(
             $params,
             '{
-                "type"       : "object",
-                "properties" : {
-                    "enable" : { "type" : "boolean" }
+                "type": "object",
+                "properties": {
+                    "enable": {
+                        "type": "boolean"
+                    }
                 }
             }'
         );
@@ -98,16 +139,20 @@ class OMVRpcServiceSkeleton extends OMVRpcServiceAbstract
         );
 
         // Set configuration object
-        if (false === $xmlConfig->replace($this->getXPath(), $object)) {
+        if (false === $xmlConfig->replace($this->getXpath(), $object)) {
             throw new OMVException(
                 OMVErrorMsg::E_CONFIG_SET_OBJECT_FAILED,
-                $this->getXPath()
+                $this->getXpath()
             );
         }
 
         // Notify configuration changes
         $dispatcher = &OMVNotifyDispatcher::getInstance();
-        $dispatcher->notify(OMV_NOTIFY_MODIFY, $this->getEventMessagePath(), $object);
+        $dispatcher->notify(
+            OMV_NOTIFY_MODIFY,
+            $this->getEventMessagePath(),
+            $object
+        );
 
         return $object;
     }

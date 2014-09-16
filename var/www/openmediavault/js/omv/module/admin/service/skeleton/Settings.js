@@ -19,35 +19,35 @@
 // require("js/omv/workspace/form/Panel.js")
 
 Ext.define("OMV.module.admin.service.skeleton.Settings", {
-    extend : "OMV.workspace.form.Panel",
+    extend: "OMV.workspace.form.Panel",
 
-    rpcService   : "Skeleton",
-    rpcGetMethod : "getSettings",
-    rpcSetMethod : "setSettings",
+    rpcService: "Skeleton",
+    rpcGetMethod: "getSettings",
+    rpcSetMethod: "setSettings",
 
-    getFormItems : function() {
+    getFormItems: function() {
         var me = this;
 
         return [{
-            xtype    : "fieldset",
-            title    : _("General settings"),
-            defaults : {
-                labelSeparator : ""
+            xtyp: "fieldset",
+            title: _("General settings"),
+            defaults: {
+                labelSeparator: ""
             },
-            items : [{
-                xtype      : "checkbox",
-                name       : "enable",
-                fieldLabel : _("Enable"),
-                checked    : false
+            items: [{
+                xtype: "checkbox",
+                name: "enable",
+                fieldLabel: _("Enable"),
+                checked: false
             }]
         }];
     }
 });
 
 OMV.WorkspaceManager.registerPanel({
-    id        : "settings",
-    path      : "/service/skeleton",
-    text      : _("Settings"),
-    position  : 10,
-    className : "OMV.module.admin.service.skeleton.Settings"
+    id: "settings",
+    path: "/service/skeleton",
+    text: _("Settings"),
+    position: 10,
+    className: "OMV.module.admin.service.skeleton.Settings"
 });
