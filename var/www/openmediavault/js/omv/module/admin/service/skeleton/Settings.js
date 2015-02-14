@@ -26,8 +26,6 @@ Ext.define("OMV.module.admin.service.skeleton.Settings", {
     rpcSetMethod: "setSettings",
 
     getFormItems: function() {
-        var me = this;
-
         return [{
             xtype: "fieldset",
             title: _("General settings"),
