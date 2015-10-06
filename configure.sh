@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-#set -x
+set -x
 
 [ -n "$1" ] && name="$1" && rm -f ./.configure
 [ -z "${name}" ] && [ -f ./.configure ] && name=$(cat ./.configure | head -n 1)
@@ -25,11 +25,19 @@ echo "Updating configuration ..."
 function copy_sed() {
 	local INFILE="$1"
 	local OUTFILE="$2"
-	cat ${INFILE} | sed -e "s/@@LOWERCASE_NAME@@/${name_lowercase}/g" | sed -e "s/@@UPPERCASE_NAME@@/${name_camelcase}/g" > ${OUTFILE}
+	cat ${INFILE} | \
+		sed -e "s/@@LOWERCASE_NAME@@/${name_lowercase}/g" | \
+		sed -e "s/@@UPPERCASE_NAME@@/${name_camelcase}/g" | \
+		sed -e "s/@@USER_NAME@@/${USER_NAME}/g" | \
+		sed -e "s/@@USER_MAIL@@/${USER_MAIL}/g" | \
+		sed -e "s/@@DATE_STAMP@@/${DATE_STAMP}/g" > ${OUTFILE}
 }
 
 ROOT=.
 FILES=./.files
+USER_NAME="Simon Baur"
+USER_MAIL="sbausis@gmx.net"
+DATE_STAMP=$(date "+%a, %d %b %Y %H:%M:%S %z")
 
 rm -Rf ${ROOT}/debian ${ROOT}/usr ${ROOT}/var
 

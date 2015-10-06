@@ -2,10 +2,10 @@ Source: openmediavault-@@LOWERCASE_NAME@@
 Section: net
 XB-Plugin-Section: network
 Priority: optional
-Maintainer: Simon Baur <sbausis@gmx.net>
+Maintainer: @@USER_NAME@@ <@@USER_MAIL@@>
 Build-Depends: debhelper (>= 9.0.0 )
 Standards-Version: 3.9.6
-Homepage: http://omv-extras.org/
+Homepage: http://UniverseNAS.0rca.ch/
 
 Package: openmediavault-@@LOWERCASE_NAME@@
 Architecture: all

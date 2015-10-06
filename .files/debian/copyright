@@ -1,5 +1,5 @@
 Format: http://dep.debian.net/deps/dep5
-Upstream-Contact: Simon Baur <sbausis@gmx.net>
+Upstream-Contact: @@USER_NAME@@ <@@USER_MAIL@@>
 Source: https://github.com/sbausis/openmediavault-@@LOWERCASE_NAME@@
-Copyright: 2014-2015 Simon Baur <sbausis@gmx.net>
+Copyright: 2015 @@USER_NAME@@ <@@USER_MAIL@@>
 License: GPL-3

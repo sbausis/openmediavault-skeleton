@@ -1,13 +1,7 @@
 /**
  * @license     http://www.gnu.org/licenses/gpl.html GPL Version 3
- * @author      Ian Moore <imooreyahoo@gmail.com>
- * @author      Marcel Beck <marcel.beck@mbeck.org>
- * @author      OpenMediaVault Plugin Developers <plugins@omv-extras.org>
- * @author      Simon Baur <sbausis@gmx.net>
- * @copyright   Copyright (c) 2011 Ian Moore
- * @copyright   Copyright (c) 2012 Marcel Beck
- * @copyright   Copyright (c) 2013-2014 OpenMediaVault Plugin Developers
- * @copyright   Copyright (c) 2015 Simon Baur
+ * @author      @@USER_NAME@@ <@@USER_MAIL@@>
+ * @copyright   Copyright (c) 2015 @@USER_NAME@@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
