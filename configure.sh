@@ -1,7 +1,11 @@
 #!/bin/bash
 
-echo "Enter plugin details: "
-read -p "Name: " name
+set -e
+#set -x
+
+[ -n "$1" ] && name="$1" && rm -f ./.configure
+[ -z "${name}" ] && [ -f ./.configure ] && name=$(cat ./.configure | head -n 1)
+[ -z "${name}" ] && echo "Enter plugin details: " && read -p "Name: " name
 
 name=$(echo ${name} | sed 's/^ *//g' | sed 's/ *$//g')
 
@@ -10,45 +14,61 @@ if [ -z "${name}" ]; then
     exit 1
 fi
 
-name_lowercase=${name,,}
-name_lowercase=$(echo ${name_lowercase} | tr -d ' ')
+[ ! -f ./.configure ] && echo "${name}" > ./.configure && exit 0
 
-name_camelcase=$(echo ${name} | sed 's/[^ ]\+/\u&/g')
-name_camelcase=$(echo ${name_camelcase} | tr -d ' ')
+name_lowercase=$(echo ${name} | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+
+name_camelcase=$(echo ${name} | sed 's/[^ ]\+/\u&/g' | tr -d ' ')
 
 echo "Updating configuration ..."
 
-# debian/*
-sed -i -e "s/skeleton/${name_lowercase}/g" debian/*
-sed -i -e "s/Skeleton/${name}/g" debian/*
+function copy_sed() {
+	local INFILE="$1"
+	local OUTFILE="$2"
+	cat ${INFILE} | sed -e "s/@@LOWERCASE_NAME@@/${name_lowercase}/g" | sed -e "s/@@UPPERCASE_NAME@@/${name_camelcase}/g" > ${OUTFILE}
+}
 
-# usr/share/openmediavault/*
-find usr/share/openmediavault/ -type f -exec sed -i -e "s/skeleton/${name_lowercase}/g" {} \;
-find usr/share/openmediavault/ -type f -exec sed -i -e "s/Skeleton/${name_camelcase}/g" {} \;
+ROOT=.
+FILES=./.files
 
-find usr/share/openmediavault/ -type f \
-                               -name skeleton* \
-                               -execdir rename "s/skeleton/${name_lowercase}/" {} \;
-find usr/share/openmediavault/ -type f \
-                               -name Skeleton* \
-                               -execdir rename "s/Skeleton/${name_camelcase}/" {} \;
+rm -Rf ${ROOT}/debian ${ROOT}/usr ${ROOT}/var
 
-# var/www/openmediavault/*
-find var/www/openmediavault/ -type f -exec sed -i -e "s/skeleton/${name_lowercase}/g" {} \;
-find var/www/openmediavault/ -type f -exec sed -i -e "s/Skeleton/${name_camelcase}/g" {} \;
+# debian
+mkdir -p ${ROOT}/debian
+copy_sed ${FILES}/debian/changelog ${ROOT}/debian/changelog
+copy_sed ${FILES}/debian/compat ${ROOT}/debian/compat
+copy_sed ${FILES}/debian/control ${ROOT}/debian/control
+copy_sed ${FILES}/debian/copyright ${ROOT}/debian/copyright
+copy_sed ${FILES}/debian/install ${ROOT}/debian/install
+copy_sed ${FILES}/debian/postinst ${ROOT}/debian/postinst
+copy_sed ${FILES}/debian/postrm ${ROOT}/debian/postrm
+copy_sed ${FILES}/debian/rules ${ROOT}/debian/rules
+copy_sed ${FILES}/debian/triggers ${ROOT}/debian/triggers
 
-find var/www/openmediavault/ -type f \
-                             -name skeleton* \
-                             -execdir rename "s/skeleton/${name_lowercase}/" {} \;
-find var/www/openmediavault/ -type f \
-                             -name Skeleton* \
-                             -execdir rename "s/Skeleton/${name_camelcase}/" {} \;
-rename "s/skeleton/${name_lowercase}/" var/www/openmediavault/js/omv/module/admin/service/skeleton
+mkdir -p ${ROOT}/debian/source
+copy_sed ${FILES}/debian/source/format ${ROOT}/debian/source/format
 
-rm -rf .git
-rm README.md
-rm configure.sh
-rename "s/skeleton/${name_lowercase}/" ../openmediavault-skeleton
+# usr
+mkdir -p ${ROOT}/usr/share/openmediavault/engined/module
+copy_sed ${FILES}/usr/share/openmediavault/engined/module/skeleton.inc ${ROOT}/usr/share/openmediavault/engined/module/${name_lowercase}.inc
+
+mkdir -p ${ROOT}/usr/share/openmediavault/engined/rpc
+copy_sed ${FILES}/usr/share/openmediavault/engined/rpc/skeleton.inc ${ROOT}/usr/share/openmediavault/engined/rpc/${name_lowercase}.inc
+
+mkdir -p ${ROOT}/usr/share/openmediavault/mkconf
+copy_sed ${FILES}/usr/share/openmediavault/mkconf/skeleton ${ROOT}/usr/share/openmediavault/mkconf/${name_lowercase}
+
+# var
+mkdir -p ${ROOT}/var/www/openmediavault/images
+cp -f ${FILES}/var/www/openmediavault/images/skeleton.png ${ROOT}/var/www/openmediavault/images/${name_lowercase}.png
+cp -f ${FILES}/var/www/openmediavault/images/skeleton.svg ${ROOT}/var/www/openmediavault/images/${name_lowercase}.svg
+
+SERVICEFOLDER=${ROOT}/var/www/openmediavault/js/omv/module/admin/service/${name_lowercase}
+mkdir -p ${SERVICEFOLDER}
+copy_sed ${FILES}/var/www/openmediavault/js/omv/module/admin/service/skeleton/Skeleton.js ${SERVICEFOLDER}/${name_camelcase}.js
+copy_sed ${FILES}/var/www/openmediavault/js/omv/module/admin/service/skeleton/Settings.js ${SERVICEFOLDER}/Settings.js
+copy_sed ${FILES}/var/www/openmediavault/js/omv/module/admin/service/skeleton/Entries.js ${SERVICEFOLDER}/Entries.js
+
 
 echo "Done!"
 
