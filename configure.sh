@@ -65,6 +65,7 @@ copy_sed ${FILES}/usr/share/openmediavault/engined/rpc/skeleton.inc ${ROOT}/usr/
 
 mkdir -p ${ROOT}/usr/share/openmediavault/mkconf
 copy_sed ${FILES}/usr/share/openmediavault/mkconf/skeleton ${ROOT}/usr/share/openmediavault/mkconf/${name_lowercase}
+chmod +x ${ROOT}/usr/share/openmediavault/mkconf/${name_lowercase}
 
 # var
 mkdir -p ${ROOT}/var/www/openmediavault/images
